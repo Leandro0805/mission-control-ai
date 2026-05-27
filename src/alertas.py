@@ -28,7 +28,14 @@ def analisar_alertas(telemetria):
         alertas.append(
             "💾 ALERTA: buffer de imagens próximo do limite."
         )
-
+    if telemetria["precisao_geolocalizacao"] < 80:
+        alertas.append(
+            "🛰 ALERTA: precisão de geolocalização degradada."
+        )
+    if telemetria["sensor_optico_rgb_nir"] == "INSTÁVEL":
+        alertas.append(
+        "📷 ALERTA: sensor óptico RGB+NIR instável."
+    )
     return alertas
 
 

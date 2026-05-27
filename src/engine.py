@@ -6,16 +6,35 @@ from src.alertas import (
     resposta_automatica
 )
 
+from dotenv import load_dotenv
+from ollama import Client
+
+import os
+
+
+load_dotenv()
+
 
 class MissionEngine:
 
     def __init__(self):
+
         self.trilha = "EnviroSat"
+
+        # Memória dos últimos ciclos
+        self.historico_missao = []
+
+        self.client = Client(
+            host="https://ollama.com",
+            headers={
+                "Authorization": f"Bearer {os.getenv('OLLAMA_API_KEY')}"
+            }
+        )
 
     def is_ready(self):
         return True
 
-    def status_snapshot(self):
+    def gerar_estado_missao(self):
 
         dados = gerar_telemetria()
 
@@ -23,15 +42,30 @@ class MissionEngine:
 
         respostas = resposta_automatica(dados)
 
+        return dados, alertas, respostas
+
+    def atualizar_historico(self, dados):
+
+        self.historico_missao.append(dados)
+
+        # Mantém apenas os últimos 5 ciclos
+        if len(self.historico_missao) > 5:
+            self.historico_missao.pop(0)
+
+    def status_snapshot(self):
+
+        dados, alertas, respostas = self.gerar_estado_missao()
+
         texto = (
             f"🌳 STATUS DO ENVIROSAT\n\n"
             f"🌡 Temperatura: {dados['temperatura_sensor']}°C\n"
             f"🔋 Energia: {dados['energia']}%\n"
             f"💾 Buffer de imagens: {dados['buffer_imagens']}%\n"
             f"📡 Comunicação: {dados['sinal_comunicacao']}%\n"
+            f"🛰 Precisão geolocalização: {dados['precisao_geolocalizacao']}%\n"
+            f"📷 Sensor RGB+NIR: {dados['sensor_optico_rgb_nir']}\n"
         )
 
-        # Exibir alertas
         if alertas:
 
             texto += "\n⚠ ALERTAS DETECTADOS:\n"
@@ -39,7 +73,6 @@ class MissionEngine:
             for alerta in alertas:
                 texto += f"- {alerta}\n"
 
-        # Exibir respostas automáticas
         if respostas:
 
             texto += "\n🤖 RESPOSTAS AUTOMÁTICAS:\n"
@@ -49,9 +82,87 @@ class MissionEngine:
 
         return texto
 
+    def carregar_prompt(self):
+
+        with open(
+            "prompts/system_prompt.md",
+            "r",
+            encoding="utf-8"
+        ) as arquivo:
+
+            return arquivo.read()
+
+    def escolher_persona(self, dados, alertas):
+
+        # Falhas críticas → Engenheiro
+        if (
+            dados["temperatura_sensor"] > 85
+            or dados["energia"] < 20
+            or dados["sinal_comunicacao"] < 45
+        ):
+
+            return "ENGENHEIRO ESPACIAL"
+
+        # Muitos alertas → Especialista ambiental
+        if len(alertas) >= 2:
+
+            return "ESPECIALISTA AMBIENTAL"
+
+        # Operação normal
+        return "OPERADOR DE MISSÃO"
+
     def analyze(self, pergunta_usuario):
 
-        return (
-            "🛰 EnviroSat operacional.\n\n"
-            "Sistema de alertas funcionando corretamente."
+        dados, alertas, respostas = self.gerar_estado_missao()
+
+        # Atualiza memória temporal
+        self.atualizar_historico(dados)
+
+        prompt_sistema = self.carregar_prompt()
+
+        persona = self.escolher_persona(
+            dados,
+            alertas
         )
+
+        contexto = f"""
+PERSONA ATIVA:
+{persona}
+
+HISTÓRICO DOS ÚLTIMOS CICLOS:
+{self.historico_missao}
+
+TELEMETRIA ATUAL:
+
+Temperatura: {dados['temperatura_sensor']}°C
+Energia: {dados['energia']}%
+Buffer: {dados['buffer_imagens']}%
+Comunicação: {dados['sinal_comunicacao']}%
+Precisão geolocalização: {dados['precisao_geolocalizacao']}%
+Sensor RGB+NIR: {dados['sensor_optico_rgb_nir']}
+
+ALERTAS:
+{alertas}
+
+RESPOSTAS AUTOMÁTICAS:
+{respostas}
+
+PERGUNTA DO OPERADOR:
+{pergunta_usuario}
+"""
+
+        resposta = self.client.chat(
+            model="gpt-oss:120b",
+            messages=[
+                {
+                    "role": "system",
+                    "content": prompt_sistema
+                },
+                {
+                    "role": "user",
+                    "content": contexto
+                }
+            ]
+        )
+
+        return resposta["message"]["content"]
