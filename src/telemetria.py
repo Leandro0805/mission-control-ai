@@ -23,6 +23,7 @@ def gerar_telemetria():
             "OPERACIONAL",
             "CALIBRANDO",
             "INSTÁVEL"
+        "focos_incendio": random.randint(0, 15)
         ])
 }
 

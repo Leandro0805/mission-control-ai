@@ -64,6 +64,7 @@ class MissionEngine:
             f"📡 Comunicação: {dados['sinal_comunicacao']}%\n"
             f"🛰 Precisão geolocalização: {dados['precisao_geolocalizacao']}%\n"
             f"📷 Sensor RGB+NIR: {dados['sensor_optico_rgb_nir']}\n"
+            f"🔥 Focos detectados: {dados['focos_incendio']}\n"
         )
 
         if alertas:
@@ -140,7 +141,7 @@ Buffer: {dados['buffer_imagens']}%
 Comunicação: {dados['sinal_comunicacao']}%
 Precisão geolocalização: {dados['precisao_geolocalizacao']}%
 Sensor RGB+NIR: {dados['sensor_optico_rgb_nir']}
-
+Focos de incêndio: {dados['focos_incendio']}
 ALERTAS:
 {alertas}
 
