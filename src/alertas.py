@@ -37,7 +37,7 @@ def analisar_alertas(telemetria):
         "📷 ALERTA: sensor óptico RGB+NIR instável."
     )
     if telemetria["focos_incendio"] > 10:
-    alertas.append(
+        alertas.append(
         "🔥 ALERTA: múltiplos focos de incêndio detectados."
     )
     return alertas

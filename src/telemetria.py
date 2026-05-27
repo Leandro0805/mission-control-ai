@@ -18,13 +18,15 @@ def gerar_telemetria():
         "sinal_comunicacao": random.randint(40, 100),
 
         "precisao_geolocalizacao": random.randint(70, 100),
+           
 
         "sensor_optico_rgb_nir": random.choice([
             "OPERACIONAL",
             "CALIBRANDO",
             "INSTÁVEL"
+        ]),
+
         "focos_incendio": random.randint(0, 15)
-        ])
 }
 
     return telemetria
