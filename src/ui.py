@@ -49,45 +49,50 @@ def show_banner():
     )
 
     console.print(
-        Rule(
-            style="green"
-        )
+        Rule(style="green")
     )
 
 
-def detectar_severidade(texto):
+def detectar_severidade(alertas):
 
-    texto = texto.lower()
+    # =========================
+    # SEM ALERTAS
+    # =========================
+
+    if not alertas:
+        return "🟢 OPERACIONAL", "green"
+
+    alertas_texto = " ".join(alertas).lower()
+
+    # =========================
+    # CRÍTICO
+    # =========================
 
     if (
-        "crítico" in texto
-        or "falha" in texto
-        or "perigo" in texto
-        or "incêndio" in texto
-        or "degradada" in texto
+        "crítica" in alertas_texto
+        or "crítico" in alertas_texto
+        or "perda de comunicação" in alertas_texto
+        or "energia abaixo" in alertas_texto
+        or "superaquecimento" in alertas_texto
     ):
 
         return "🔴 CRÍTICO", "red"
 
-    if (
-        "atenção" in texto
-        or "alerta" in texto
-        or "monitorar" in texto
-    ):
+    # =========================
+    # ALERTA
+    # =========================
 
-        return "🟡 ATENÇÃO", "yellow"
-
-    return "🟢 OPERACIONAL", "green"
+    return "🟡 ALERTA", "yellow"
 
 
-def show_response(text):
+def show_response(text, alertas=None):
 
     now = datetime.now().strftime("%d/%m %H:%M:%S")
 
-    severidade, cor = detectar_severidade(text)
+    severidade, cor = detectar_severidade(alertas)
 
     titulo = (
-        f"◆ ENVIROSAT MISSION TERMINAL • {severidade}"
+        f"◆ ENVIROSAT MISSION TERMINAL ◆ {severidade}"
     )
 
     console.print(
@@ -178,7 +183,7 @@ def show_logs():
 def show_alerts():
 
     alertas = (
-        "🟡 Nenhum alerta crítico ativo.\n"
+        "🟢 Nenhum alerta crítico ativo.\n"
         "📡 Comunicação estável.\n"
         "🌳 Monitoramento ambiental operacional."
     )
@@ -259,7 +264,8 @@ def run_cli(engine):
         if user_input == "/status":
 
             show_response(
-                engine.status_snapshot()
+                engine.status_snapshot(),
+                []
             )
 
             continue
@@ -290,6 +296,11 @@ def run_cli(engine):
 
             continue
 
+        dados, alertas, respostas = engine.gerar_estado_missao()
+
         resposta = engine.analyze(user_input)
 
-        show_response(resposta)
+        show_response(
+            resposta,
+            alertas
+        )
