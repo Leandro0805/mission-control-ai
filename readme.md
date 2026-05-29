@@ -20,15 +20,17 @@ A plataforma integra monitoramento ambiental, geração automática de alertas, 
 
 # Persona atendida
 
-O sistema atende principalmente operadores de centros de controle ambiental e equipes de monitoramento terrestre responsáveis pelo acompanhamento de queimadas, desmatamento e falhas operacionais do satélite.
+O sistema atende principalmente operadores de centros de controle ambiental e equipes de monitoramento terrestre responsáveis pelo acompanhamento de queimadas, desmatamento, falhas operacionais e resposta rápida a eventos ambientais críticos.
 
-O sistema alterna dinamicamente entre múltiplas personas conforme a situação da missão:
+Para tornar as análises mais realistas e contextualizadas, o EnviroSat utiliza múltiplas personas especializadas que são ativadas dinamicamente conforme o estado da missão e os alertas detectados:
 
 * Operador de missão
 * Engenheiro espacial
 * Especialista ambiental
 
-As personas escolhidas são essenciais para o funcionamento do sistema, pois há a necessidade de competência na realização do relatório dos status, nas análises do funcionamento técnico e no cálculo do impacto dos focos detectados no planeta. A persona ativa varia automaticamente conforme os alertas detectados e o estado operacional do satélite.
+A utilização de múltiplas personas foi escolhida porque diferentes situações operacionais exigem competências distintas. Em cenários normais, o Operador de Missão é responsável pelo acompanhamento geral da telemetria e do status operacional do satélite. Em situações críticas de hardware, energia ou comunicação, o Engenheiro Espacial assume a análise técnica e propõe ações corretivas para garantir a continuidade da missão. Já em eventos relacionados a queimadas, desmatamento ou impactos ambientais, o Especialista Ambiental interpreta os dados coletados pelo satélite e traduz as consequências práticas para equipes terrestres e órgãos ambientais.
+
+Essa abordagem permite que a IA gere respostas mais contextualizadas, especializadas e coerentes com o tipo de problema detectado, simulando o funcionamento de um centro de controle espacial real.
 
 ---
 
@@ -126,11 +128,15 @@ Visualização da interface principal do EnviroSat CLI, incluindo banner, comand
 ![Tela inicial](assets/screenshot_home.png)
 
 ---
+
 ## Operação normal da missão
 
 Exemplo de operação estável do satélite, com todos os parâmetros dentro da faixa operacional e análise contextual da IA.
 
 ![Tela inicial](assets/screenshot_normalidade.png)
+
+---
+
 ## Cenário crítico e alertas automáticos
 
 Simulação de falha operacional com alertas críticos, degradação de sistemas e análise técnica gerada pela IA.
@@ -209,7 +215,7 @@ Ativação de alertas críticos e análise intensiva da missão.
 
 ---
 
-# 💼 Proposta de valor / modelo de negócio
+#  Proposta de valor / modelo de negócio
 
 ## 1. Qual problema terrestre a missão resolve?
 
@@ -243,14 +249,11 @@ O modelo ideal é híbrido, combinando contratos públicos e assinaturas privada
 
 ## 3. Métrica de impacto
 
-## 3. Métrica de impacto
-
 Se operasse 100% saudável por 1 ano, o EnviroSat poderia monitorar mais de 2 milhões de hectares de áreas ambientais protegidas e auxiliar na detecção antecipada de milhares de focos de incêndio florestal.
 
 Com monitoramento contínuo e resposta mais rápida das equipes terrestres, o sistema poderia contribuir para evitar a emissão indireta de dezenas de milhares de toneladas de CO₂ provenientes de queimadas e desmatamento ilegal.
 
 Além disso, os dados gerados poderiam apoiar órgãos ambientais na fiscalização de regiões críticas, aumentando a eficiência operacional das brigadas e reduzindo danos ambientais em áreas de preservação.
-
 
 ---
 
@@ -291,38 +294,11 @@ O sistema possui uma interface inspirada em terminais operacionais espaciais, ut
 
 # Diferenciais do projeto
 
-* Integração com IA generativa via Ollama Cloud
 * Sistema de múltiplas personas
 * Memória contextual dos últimos ciclos
-* Interface CLI estilo Mission Control
 * Sistema de severidade visual
 * Simulação de impactos ambientais reais
 * Modo crise para apresentações e testes
-
----
-
-# Estrutura do projeto
-
-```txt
-mission-control-ai/
-│
-├── src/
-│   ├── engine.py
-│   ├── ui.py
-│   ├── telemetria.py
-│   ├── alertas.py
-│
-├── prompts/
-│   └── system_prompt.md
-│
-├── assets/
-│
-├── .env
-├── .env.example
-├── requirements.txt
-├── main.py
-└── README.md
-```
 
 ---
 
@@ -338,15 +314,7 @@ mission-control-ai/
 
 # Vídeo de demonstração
 
-🎥 Adicionar link do vídeo no YouTube após gravação.
-
-Exemplo:
-
-```txt
-https://www.youtube.com/watch?v=SEU_VIDEO
-```
-
----
+[Assistir demonstração no YouTube](https://youtu.be/2ICAlDVqeM8)
 
 # Considerações finais
 
